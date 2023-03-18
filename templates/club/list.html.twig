@@ -1,0 +1,53 @@
+<!-- templates/club/list.html.twig -->
+Il y a {{ formations|length }} formations :
+{% for formation in formations %}
+    {{ formation.Titre|upper }} <br>
+{% endfor %}
+Titres des formations théoriques :
+{% for formation in formations %}
+    {% if formation.Description == 'Formation theorique' %}
+        {{ formation.Titre }} <br>
+    {% endif %}
+{% endfor %}
+<!-- templates/club/list.html.twig -->
+{% if formations|length > 0 %}
+  {% set max_participants = 0 %}
+  {% set formation_with_max_participants = null %}
+  {% for formation in formations %}
+    {% if formation.nb_participants > max_participants %}
+      {% set max_participants = formation.nb_participants %}
+      {% set formation_with_max_participants = formation %}
+    {% endif %}
+  {% endfor %}
+  {% if formation_with_max_participants is not null %}
+    La formation "{{ formation_with_max_participants.Titre }}" a le plus grand nombre de participants ({{ formation_with_max_participants.nb_participants }}).
+  {% endif %}
+{% else %}
+  Il n'y a aucune formation.
+{% endif %}
+
+{% set totalParticipants = 0 %}
+{% for formation in formations %}
+    {{ formation.Titre|upper }} <br>
+    {% set totalParticipants = totalParticipants + formation.nb_participants %}
+{% endfor %}
+Le nombre total de participants dans toutes les formations est : {{ totalParticipants }}
+{% if formations is defined and formations is not empty %}
+    Il y a {{ formations|length }} formations :
+    {% for formation in formations %}
+        {{ formation.Titre|upper }} <br>
+        {% if formation.Description == 'formation theorique' %}
+            {{ formation.Titre }} <br>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    Aucune formation n'a été trouvée.
+{% endif %}
+les formations qui n'ont pas de participants :
+{% for formation in formations %}
+ {% if formation.nb_participants == 0 %}
+      <form action="{{ path('get_name', {'nom': formation.Titre}) }}" method="post">
+        <input type="submit" value="Participer">
+      </form>
+    {% endif %}
+{% endfor %}
